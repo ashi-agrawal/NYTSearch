@@ -3,18 +3,18 @@ package com.example.ashiagrawal.nytsearch.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 
 import com.example.ashiagrawal.nytsearch.Article;
 import com.example.ashiagrawal.nytsearch.ArticleArrayAdapter;
+import com.example.ashiagrawal.nytsearch.ItemClickSupport;
 import com.example.ashiagrawal.nytsearch.R;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -31,7 +31,7 @@ import cz.msebera.android.httpclient.Header;
 public class SearchActivity extends AppCompatActivity {
 
     EditText etQuery;
-    GridView gvResults;
+    RecyclerView rvResults;
     Button btnSearch;
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
@@ -47,20 +47,23 @@ public class SearchActivity extends AppCompatActivity {
 
     private void setUpViews(){
         etQuery = (EditText) findViewById(R.id.etQuery);
-        gvResults = (GridView) findViewById(R.id.gvResults);
+        rvResults = (RecyclerView) findViewById(R.id.rvResults);
         btnSearch = (Button) findViewById(R.id.btnSearch);
         articles = new ArrayList<>();
-        adapter = new ArticleArrayAdapter(this, articles);
-        gvResults.setAdapter(adapter);
-        gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
-                Article article = articles.get(position);
-                i.putExtra("article", article);
-                startActivity(i);
-            }
-        });
+        adapter = new ArticleArrayAdapter(articles);
+        rvResults.setAdapter(adapter);
+        // Set layout manager to position the items
+        rvResults.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
+        ItemClickSupport.addTo(rvResults).setOnItemClickListener(
+                new ItemClickSupport.OnItemClickListener() {
+                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                        Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
+                        Article article = articles.get(position);
+                        i.putExtra("article", article);
+                        startActivity(i);
+                    }
+                }
+        );
     }
 
     @Override
@@ -97,11 +100,13 @@ public class SearchActivity extends AppCompatActivity {
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("DEBUG", response.toString());
                 JSONArray articleJsonResults = null;
                 try {
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                    adapter.addAll(Article.fromJSONArray(articleJsonResults));
+                    int curSize = adapter.getItemCount();
+                    ArrayList<Article> newItems = Article.fromJSONArray(articleJsonResults);
+                    articles.addAll(newItems);
+                    adapter.notifyItemRangeInserted(curSize, newItems.size());
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
