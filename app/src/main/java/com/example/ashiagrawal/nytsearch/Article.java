@@ -37,7 +37,7 @@ public class Article implements Serializable {
                 JSONObject multimediaJson = multimedia.getJSONObject(0);
                 this.thumbnail = "http://www.nytimes.com/" + multimediaJson.getString("url");
             } else {
-                this.thumbnail = "";
+                this.thumbnail = "http://www.rakuten.co.uk/assets/noimage_96x96.gif";
             }
         } catch (JSONException e){
 

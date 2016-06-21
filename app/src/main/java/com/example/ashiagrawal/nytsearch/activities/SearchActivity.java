@@ -14,6 +14,7 @@ import android.widget.EditText;
 
 import com.example.ashiagrawal.nytsearch.Article;
 import com.example.ashiagrawal.nytsearch.ArticleArrayAdapter;
+import com.example.ashiagrawal.nytsearch.EndlessRecyclerViewScrollListener;
 import com.example.ashiagrawal.nytsearch.ItemClickSupport;
 import com.example.ashiagrawal.nytsearch.R;
 import com.loopj.android.http.AsyncHttpClient;
@@ -53,7 +54,8 @@ public class SearchActivity extends AppCompatActivity {
         adapter = new ArticleArrayAdapter(articles);
         rvResults.setAdapter(adapter);
         // Set layout manager to position the items
-        rvResults.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
+        StaggeredGridLayoutManager grid = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
+        rvResults.setLayoutManager(grid);
         ItemClickSupport.addTo(rvResults).setOnItemClickListener(
                 new ItemClickSupport.OnItemClickListener() {
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
@@ -64,6 +66,12 @@ public class SearchActivity extends AppCompatActivity {
                     }
                 }
         );
+        rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(grid) {
+        @Override
+        public void onLoadMore(int page, int totalItemsCount) {
+            customLoadMoreDataFromApi(page);
+        }
+        });
     }
 
     @Override
@@ -89,13 +97,16 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void onArticleSearch(View view) {
+        customLoadMoreDataFromApi(0);
+    }
+
+    public void customLoadMoreDataFromApi(int page) {
         String query = etQuery.getText().toString();
-        //Toast.makeText(this, "Searching for" + query, Toast.LENGTH_LONG).show();
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
         RequestParams params = new RequestParams();
         params.put("api-key", "1532fa81593c4ee78fa835df68fe5f1f");
-        params.put("page", 0);
+        params.put("page", page);
         params.put("q", query);
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
