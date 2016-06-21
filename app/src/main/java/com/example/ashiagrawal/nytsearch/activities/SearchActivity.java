@@ -36,6 +36,7 @@ public class SearchActivity extends AppCompatActivity {
     Button btnSearch;
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
+    StaggeredGridLayoutManager grid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,7 @@ public class SearchActivity extends AppCompatActivity {
         adapter = new ArticleArrayAdapter(articles);
         rvResults.setAdapter(adapter);
         // Set layout manager to position the items
-        StaggeredGridLayoutManager grid = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
+        grid = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         rvResults.setLayoutManager(grid);
         ItemClickSupport.addTo(rvResults).setOnItemClickListener(
                 new ItemClickSupport.OnItemClickListener() {
@@ -66,12 +67,6 @@ public class SearchActivity extends AppCompatActivity {
                     }
                 }
         );
-        rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(grid) {
-        @Override
-        public void onLoadMore(int page, int totalItemsCount) {
-            customLoadMoreDataFromApi(page);
-        }
-        });
     }
 
     @Override
@@ -97,10 +92,18 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void onArticleSearch(View view) {
+        rvResults.clearOnScrollListeners();
+        rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(grid) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                customLoadMoreDataFromApi(page);
+            }
+        });
+        articles.clear();
         customLoadMoreDataFromApi(0);
     }
 
-    public void customLoadMoreDataFromApi(int page) {
+    public void customLoadMoreDataFromApi(final int page) {
         String query = etQuery.getText().toString();
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
@@ -117,7 +120,8 @@ public class SearchActivity extends AppCompatActivity {
                     int curSize = adapter.getItemCount();
                     ArrayList<Article> newItems = Article.fromJSONArray(articleJsonResults);
                     articles.addAll(newItems);
-                    adapter.notifyItemRangeInserted(curSize, newItems.size());
+                    adapter.notifyDataSetChanged();
+                    //adapter.notifyItemRangeInserted(curSize, newItems.size() - 1);
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
