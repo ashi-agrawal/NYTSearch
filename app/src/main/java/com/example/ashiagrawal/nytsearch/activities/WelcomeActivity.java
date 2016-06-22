@@ -22,7 +22,8 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     public void onBrowse(View view){
-
+        Intent intent = new Intent(WelcomeActivity.this, BrowseActivity.class);
+        startActivity(intent);
     }
 
     public void onSearchQuestion(View view){

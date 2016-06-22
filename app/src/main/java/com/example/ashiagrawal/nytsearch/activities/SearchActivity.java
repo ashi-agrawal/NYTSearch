@@ -2,8 +2,10 @@ package com.example.ashiagrawal.nytsearch.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -44,17 +46,15 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         setUpViews();
     }
 
     private void setUpViews(){
-        etQuery = (EditText) findViewById(R.id.etQuery);
         rvResults = (RecyclerView) findViewById(R.id.rvResults);
-        btnSearch = (Button) findViewById(R.id.btnSearch);
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(articles);
         rvResults.setAdapter(adapter);
-        // Set layout manager to position the items
         grid = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         rvResults.setLayoutManager(grid);
         ItemClickSupport.addTo(rvResults).setOnItemClickListener(
@@ -71,9 +71,22 @@ public class SearchActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_search, menu);
-        return true;
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(final String query) {
+                onArticleSearch(query);
+                searchView.clearFocus();
+                return true;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -91,20 +104,19 @@ public class SearchActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onArticleSearch(View view) {
+    public void onArticleSearch(final String query) {
         rvResults.clearOnScrollListeners();
         rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(grid) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                customLoadMoreDataFromApi(page);
+                customLoadMoreDataFromApi(page, query);
             }
         });
         articles.clear();
-        customLoadMoreDataFromApi(0);
+        customLoadMoreDataFromApi(0, query);
     }
 
-    public void customLoadMoreDataFromApi(final int page) {
-        String query = etQuery.getText().toString();
+    public void customLoadMoreDataFromApi(final int page, String query) {
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
         RequestParams params = new RequestParams();
@@ -118,7 +130,7 @@ public class SearchActivity extends AppCompatActivity {
                 try {
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
                     int curSize = adapter.getItemCount();
-                    ArrayList<Article> newItems = Article.fromJSONArray(articleJsonResults);
+                    ArrayList<Article> newItems = Article.fromJSONArray(articleJsonResults, "search");
                     articles.addAll(newItems);
                     adapter.notifyDataSetChanged();
                     //adapter.notifyItemRangeInserted(curSize, newItems.size() - 1);

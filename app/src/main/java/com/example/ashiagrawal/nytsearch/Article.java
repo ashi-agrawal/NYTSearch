@@ -28,27 +28,37 @@ public class Article implements Serializable {
         return thumbnail;
     }
 
-    public Article (JSONObject jsonObject) {
+    public Article (JSONObject jsonObject, String type) {
         try {
-            this.webUrl = jsonObject.getString("web_url");
-            this.headline = jsonObject.getJSONObject("headline").getString("main");
-            JSONArray multimedia = jsonObject.getJSONArray("multimedia");
-            if (multimedia.length() > 0){
-                JSONObject multimediaJson = multimedia.getJSONObject(0);
-                this.thumbnail = "http://www.nytimes.com/" + multimediaJson.getString("url");
-            } else {
-                this.thumbnail = "http://www.rakuten.co.uk/assets/noimage_96x96.gif";
+            if (type == "search") {
+                this.webUrl = jsonObject.getString("web_url");
+                this.headline = jsonObject.getJSONObject("headline").getString("main");
+                JSONArray multimedia = jsonObject.getJSONArray("multimedia");
+                if (multimedia.length() > 0) {
+                    JSONObject multimediaJson = multimedia.getJSONObject(0);
+                    this.thumbnail = "http://www.nytimes.com/" + multimediaJson.getString("url");
+                } else {
+                    this.thumbnail = "http://www.rakuten.co.uk/assets/noimage_96x96.gif";
+                }
+            } else if (type == "browse"){
+                this.webUrl = jsonObject.getString("url");
+                this.headline = jsonObject.getString("title");
+                JSONArray multimedia = jsonObject.getJSONArray("multimedia");
+                if (multimedia.length() > 0) {
+                    JSONObject multimediaJson = multimedia.getJSONObject(0);
+                    this.thumbnail = "http://www.nytimes.com/" + multimediaJson.getString("url");
+                }
             }
         } catch (JSONException e){
 
         }
     }
 
-    public static ArrayList<Article> fromJSONArray(JSONArray array){
+    public static ArrayList<Article> fromJSONArray(JSONArray array, String type){
         ArrayList<Article> results = new ArrayList<>();
         for (int i = 0; i < array.length(); i++){
             try {
-                results.add(new Article(array.getJSONObject(i)));
+                results.add(new Article(array.getJSONObject(i), type));
             } catch (JSONException e){
                 e.printStackTrace();
             }
