@@ -44,7 +44,6 @@ public class BrowseActivity extends AppCompatActivity {
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(articles);
         rvBrowseResults.setAdapter(adapter);
-        // Set layout manager to position the items
         list = new LinearLayoutManager(this);
         rvBrowseResults.setLayoutManager(list);
         ItemClickSupport.addTo(rvBrowseResults).setOnItemClickListener(
