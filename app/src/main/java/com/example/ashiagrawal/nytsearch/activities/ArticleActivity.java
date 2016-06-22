@@ -14,17 +14,21 @@ import android.webkit.WebViewClient;
 import com.example.ashiagrawal.nytsearch.Article;
 import com.example.ashiagrawal.nytsearch.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ArticleActivity extends AppCompatActivity {
     private ShareActionProvider miShareAction;
+    @BindView(R.id.wvArticle) WebView webView;
+    @BindView(R.id.toolbar) Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Article article = (Article) getIntent().getSerializableExtra("article");
-        WebView webView = (WebView) findViewById(R.id.wvArticle);
+        ButterKnife.bind(this);
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -42,10 +46,7 @@ public class ArticleActivity extends AppCompatActivity {
         miShareAction = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
-        // get reference to WebView
-        WebView wvArticle = (WebView) findViewById(R.id.wvArticle);
-        // pass in the URL currently being used by the WebView
-        shareIntent.putExtra(Intent.EXTRA_TEXT, wvArticle.getUrl());
+        shareIntent.putExtra(Intent.EXTRA_TEXT, webView.getUrl());
         miShareAction.setShareIntent(shareIntent);
         return super.onCreateOptionsMenu(menu);
     }

@@ -9,9 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by ashiagrawal on 6/20/16.
@@ -20,17 +23,17 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapte
 
     private ArrayList<Article> articles;
 
+
     public ArticleArrayAdapter(ArrayList<Article> articles) {
         this.articles = articles;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
-        public TextView tvTitle;
-        public ImageView ivImage;
+        @BindView(R.id.tvTitle) TextView tvTitle;
+        @BindView(R.id.ivImage) ImageView ivImage;
         public ViewHolder(View itemView) {
             super(itemView);
-            tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
-            ivImage = (ImageView) itemView.findViewById(R.id.ivImage);
+            ButterKnife.bind(this, itemView);
         }
     }
 
@@ -51,7 +54,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapte
         ImageView ivImage = viewHolder.ivImage;
         String thumbnail = article.getThumbnail();
         if (!TextUtils.isEmpty(thumbnail)){
-            Picasso.with(ivImage.getContext()).load(thumbnail).into(ivImage);
+            Glide.with(ivImage.getContext()).load(thumbnail).into(ivImage);
         }
     }
 

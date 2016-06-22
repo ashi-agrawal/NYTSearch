@@ -22,25 +22,27 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
 public class BrowseActivity extends AppCompatActivity {
 
-    RecyclerView rvBrowseResults;
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
     LinearLayoutManager list;
+    @BindView(R.id.rvBrowseResults) RecyclerView rvBrowseResults;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse);
+        ButterKnife.bind(this);
         setUpViews();
         customLoadMoreDataFromApi(0);
     }
 
     private void setUpViews(){
-        rvBrowseResults = (RecyclerView) findViewById(R.id.rvBrowseResults);
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(articles);
         rvBrowseResults.setAdapter(adapter);
