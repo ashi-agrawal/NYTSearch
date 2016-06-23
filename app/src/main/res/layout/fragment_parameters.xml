@@ -4,44 +4,112 @@
     android:orientation="vertical" android:layout_width="wrap_content"
     android:layout_height="wrap_content" android:layout_gravity="center">
 
-    <Switch
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sort Order"
-        android:id="@+id/switchOrder"
-        android:textOn="Oldest"
-        android:textOff="Newest"
-        android:imeOptions="actionDone"
-        android:paddingTop="0dp"
-        android:paddingBottom="0dp"
-        android:paddingRight="40dp"
-        android:paddingLeft="40dp" />
+        android:text="@string/filters"
+        android:id="@+id/tvFilter"
+        android:textStyle="bold"
+        android:paddingBottom="30dp"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/start_date"
+        android:id="@+id/tvDate"
+        android:paddingLeft="15dp"
+        android:paddingStart="15dp"
+        android:layout_below="@+id/tvFilter"
+        android:layout_alignLeft="@+id/tvTypes"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sortOrder"
+        android:id="@+id/tvSort"
+        android:paddingLeft="15dp"
+        android:paddingStart="15dp"
+        android:layout_alignTop="@+id/spOrder"
+        android:layout_alignLeft="@+id/tvTypes"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/news_desk_values"
+        android:id="@+id/tvTypes"
+        android:paddingLeft="15dp"
+        android:paddingStart="15dp"
+        android:paddingRight="5dp"
+        android:paddingEnd="5dp"
+        android:layout_alignTop="@+id/cbArts"
+        android:layout_alignParentLeft="true"/>
+
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New CheckBox"
-        android:id="@+id/checkBox"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:text="@string/arts"
+        android:id="@+id/cbArts"
+        android:layout_below="@+id/spOrder"
+        android:layout_toEndOf="@+id/tvTypes"
+        android:layout_toRightOf="@+id/tvTypes"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:checked="false" />
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New CheckBox"
-        android:id="@+id/checkBox2"
-        android:layout_above="@+id/checkBox"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:text="@string/fashion_amp_style"
+        android:id="@+id/cbFashion"
+        android:layout_below="@+id/cbArts"
+        android:layout_alignStart="@+id/cbArts"
+        android:layout_alignLeft="@+id/cbArts"
+        android:padding="10dp"
+        android:checked="false" />
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New CheckBox"
-        android:id="@+id/checkBox3"
-        android:layout_above="@+id/checkBox2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:text="@string/sports"
+        android:id="@+id/cbSports"
+        android:layout_below="@+id/cbFashion"
+        android:layout_alignStart="@+id/cbFashion"
+        android:layout_alignLeft="@+id/cbFashion"
+        android:padding="10dp"
+        android:checked="false" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:id="@+id/btnSave"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/cbSports"
+        android:layout_centerHorizontal="true"/>
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spOrder"
+        android:spinnerMode="dropdown"
+        android:layout_below="@+id/btnShowDate"
+        android:layout_alignStart="@+id/cbArts"
+        android:layout_alignLeft="@+id/cbArts" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pick a Date!"
+        android:id="@+id/btnShowDate"
+        android:layout_toEndOf="@+id/tvDate"
+        android:layout_toRightOf="@+id/tvDate"
+        android:layout_alignLeft="@+id/spOrder"
+        android:layout_alignTop="@+id/tvDate"
+        android:nestedScrollingEnabled="false" />
+
+
 
 </RelativeLayout>

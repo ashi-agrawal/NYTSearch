@@ -14,6 +14,8 @@ import android.webkit.WebViewClient;
 import com.example.ashiagrawal.nytsearch.Article;
 import com.example.ashiagrawal.nytsearch.R;
 
+import org.parceler.Parcels;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -26,9 +28,10 @@ public class ArticleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article);
-        setSupportActionBar(toolbar);
-        Article article = (Article) getIntent().getSerializableExtra("article");
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        Article article = (Article) Parcels.unwrap(getIntent().getParcelableExtra("article"));
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

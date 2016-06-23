@@ -3,18 +3,23 @@ package com.example.ashiagrawal.nytsearch;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by ashiagrawal on 6/20/16.
  */
-public class Article implements Serializable {
+@Parcel
+public class Article {
 
     String webUrl;
     String headline;
     String thumbnail;
+
+    public Article () {
+
+    }
 
     public String getWebUrl() {
         return webUrl;
@@ -46,7 +51,8 @@ public class Article implements Serializable {
                 JSONArray multimedia = jsonObject.getJSONArray("multimedia");
                 if (multimedia.length() > 0) {
                     JSONObject multimediaJson = multimedia.getJSONObject(0);
-                    this.thumbnail = "http://www.nytimes.com/" + multimediaJson.getString("url");
+                    if (type == "search") this.thumbnail = "http://www.nytimes.com/" + multimediaJson.getString("url");
+                    else if (type == "browse") this.thumbnail = multimediaJson.getString("url");
                 }
             }
         } catch (JSONException e){
