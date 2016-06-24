@@ -13,10 +13,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.example.ashiagrawal.nytsearch.Article;
 import com.example.ashiagrawal.nytsearch.ArticleArrayAdapter;
 import com.example.ashiagrawal.nytsearch.EndlessRecyclerViewScrollListener;
+import com.example.ashiagrawal.nytsearch.FilterInfo;
 import com.example.ashiagrawal.nytsearch.ItemClickSupport;
 import com.example.ashiagrawal.nytsearch.ParametersDialogFragment;
 import com.example.ashiagrawal.nytsearch.R;
@@ -35,13 +37,22 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements ParametersDialogFragment.OnFilterSearchListener  {
 
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
     StaggeredGridLayoutManager grid;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.rvResults) RecyclerView rvResults;
+    FilterInfo filters = new FilterInfo();
+    String currentQuery;
+
+    @Override
+    public void onUpdateFilters(FilterInfo info) {
+        filters = info;
+        Toast.makeText(this, filters.toString(), Toast.LENGTH_LONG).show();
+        if (currentQuery != null) onArticleSearch(currentQuery);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +67,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private void showEditDialog() {
         FragmentManager fm = getSupportFragmentManager();
-        ParametersDialogFragment editNameDialogFragment = ParametersDialogFragment.newInstance();
+        ParametersDialogFragment editNameDialogFragment = ParametersDialogFragment.newInstance(filters);
         editNameDialogFragment.show(fm, "fragment_parameters");
     }
 
@@ -122,6 +133,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
         articles.clear();
+        currentQuery = query;
         customLoadMoreDataFromApi(0, query, "search");
     }
 
@@ -132,9 +144,14 @@ public class SearchActivity extends AppCompatActivity {
         else if (type == "browse") url = "https://api.nytimes.com/svc/topstories/v2/home.json";
         RequestParams params = new RequestParams();
         if (type == "search" ) {
+            if(filters.date != null) params.put("begin_date", filters.getDateFilter());
+            if(filters.getOrder() != null) params.put("sort", filters.getOrder());
+            if(filters.isArts()) params.put("fq", "Arts");
+            if()
             params.put("api-key", "1532fa81593c4ee78fa835df68fe5f1f");
             params.put("page", page);
             params.put("q", query);
+            currentQuery = query;
         } else if (type == "browse"){
             params.put("api-key", "1532fa81593c4ee78fa835df68fe5f1f");
         }
