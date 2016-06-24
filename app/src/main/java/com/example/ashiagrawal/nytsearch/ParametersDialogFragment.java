@@ -26,13 +26,14 @@ import butterknife.ButterKnife;
  * Created by ashiagrawal on 6/22/16.
  */
 public class ParametersDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+    //DatePickerFragment.DatePickerListener
     @BindView(R.id.spOrder) Spinner spOrder;
     @BindView(R.id.btnSave) Button save;
     @BindView(R.id.btnShowDate) Button showDate;
+    Calendar date;
 
     public ParametersDialogFragment() {
     }
-
 
     public static ParametersDialogFragment newInstance() {
         ParametersDialogFragment frag = new ParametersDialogFragment();
@@ -48,7 +49,8 @@ public class ParametersDialogFragment extends DialogFragment implements DatePick
         showDate.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
-                DatePickerFragment frag = new DatePickerFragment().newInstance();
+                DatePickerFragment frag = new DatePickerFragment();
+                frag.setTargetFragment(ParametersDialogFragment.this, 0);
                 frag.show(fm, "DatePickerFragment");
             }
         });
@@ -75,10 +77,82 @@ public class ParametersDialogFragment extends DialogFragment implements DatePick
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth){
         showDate.setText(String.valueOf(year) + "-" + String.valueOf(monthOfYear)
                 + "-" + String.valueOf(dayOfMonth));
-        final Calendar c = Calendar.getInstance();
-        c.set(Calendar.YEAR, year);
-        c.set(Calendar.MONTH, monthOfYear);
-        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        date = Calendar.getInstance();
+        date.set(Calendar.YEAR, year);
+        date.set(Calendar.MONTH, monthOfYear);
+        date.set(Calendar.DAY_OF_MONTH, dayOfMonth);
     }
+
+    //    public interface DatePickerListener {
+//        void onFinishDatePicker(String inputText);
+//    }
+//
+//    // Call this method to send the data back to the parent fragment
+//    public void sendBackResult(int selectedMonth) {
+//        DatePickerListener listener = (DatePickerListener) getTargetFragment();
+//        listener.onFinishDatePicker(Integer.toString(selectedMonth));
+//        dismiss();
+//    }
+//
+//    public void onClick(DialogInterface dialog, int which) {
+//        if(which==Dialog.BUTTON_POSITIVE)
+//        {
+//            sendBackResult(start.getMonth());
+//        }
+//
+//    }
+//
+//    @BindView(R.id.dpStart) DatePicker start;
+//    DatePickerDialog.OnDateSetListener onDateSet;
+//    private boolean isModal = false;
+//
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//        if(isModal)
+//        {
+//            return super.onCreateView(inflater, container, savedInstanceState);
+//        }
+//        else {
+//            View view = inflater.inflate(R.layout.fragment_date_picker, container);
+//            ButterKnife.bind(this, view);
+//            return view;
+//        }
+//    }
+//
+//    @Override
+//    public Dialog onCreateDialog(Bundle savedInstanceState) {
+//        final Calendar c = Calendar.getInstance();
+//        int year = c.get(Calendar.YEAR);
+//        int month = c.get(Calendar.MONTH);
+//        int day = c.get(Calendar.DAY_OF_MONTH);
+//        DatePickerDialog.OnDateSetListener listener = (DatePickerDialog.OnDateSetListener) getTargetFragment();
+//        DatePickerDialog dialog = new DatePickerDialog(getActivity(), listener, year, month, day);
+//        start = dialog.getDatePicker();
+//        start.updateDate(year, month, day);
+//        return dialog;
+//    }
+//
+//    public static DatePickerFragment newInstance()
+//    {
+//        DatePickerFragment frag = new DatePickerFragment();
+//        frag.isModal = true;
+//        return frag;
+//    }
+//
+//    public void setCallBack(DatePickerDialog.OnDateSetListener onDate) {
+//        onDateSet = onDate;
+//    }
+//
+//    private DatePickerDialog.OnDateSetListener pickerListener = new DatePickerDialog.OnDateSetListener() {
+//        @Override
+//        public void onDateSet(DatePicker view, int selectedYear,
+//                              int selectedMonth, int selectedDay) {
+//            Log.d("Date selected", String.valueOf(new StringBuilder().append(selectedMonth + 1)
+//                    .append("-").append(selectedDay).append("-").append(selectedYear)
+//                    .append(" ")));
+//            sendBackResult(selectedMonth);
+//        }
+//    };
+//}
 }
 
