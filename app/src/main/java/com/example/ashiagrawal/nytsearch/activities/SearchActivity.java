@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.Toast;
 
 import com.example.ashiagrawal.nytsearch.Article;
 import com.example.ashiagrawal.nytsearch.ArticleArrayAdapter;
@@ -50,7 +49,6 @@ public class SearchActivity extends AppCompatActivity implements ParametersDialo
     @Override
     public void onUpdateFilters(FilterInfo info) {
         filters = info;
-        Toast.makeText(this, filters.toString(), Toast.LENGTH_LONG).show();
         if (currentQuery != null) onArticleSearch(currentQuery);
     }
 

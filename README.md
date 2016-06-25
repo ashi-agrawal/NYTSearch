@@ -36,6 +36,7 @@ The following **optional** features are implemented:
 The following **additional** features are implemented:
 
 * [x] Implemented welcome screen that allows user to either search articles or browse articles (which is the list of articles also displayed in the search flow (before searching)).
+* [x] Changed the icon of the app to the New York Times icon
 
 ## Video Walkthrough
 
