@@ -17,7 +17,7 @@ The following **optional** features are implemented:
 * [x] Used the **ActionBar SearchView** or custom layout as the query box
 * [x] User can **share an article link** to their friends or email it to themselves
 * [x] Improved the user interface and experiment with image assets and/or styling and coloring
-* x ] User can click on "settings" which allows selection of **advanced search options** to filter results
+* [x] User can click on "settings" which allows selection of **advanced search options** to filter results
   * [x] User can configure advanced search filters such as:
     * [x] Begin Date (using a date picker)
     * [x] News desk values (Arts, Fashion & Style, Sports)
