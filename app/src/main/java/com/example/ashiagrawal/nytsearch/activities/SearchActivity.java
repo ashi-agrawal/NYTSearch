@@ -146,8 +146,16 @@ public class SearchActivity extends AppCompatActivity implements ParametersDialo
         if (type == "search" ) {
             if(filters.date != null) params.put("begin_date", filters.getDateFilter());
             if(filters.getOrder() != null) params.put("sort", filters.getOrder());
-            if(filters.isArts()) params.put("fq", "Arts");
-            if()
+            ArrayList<String> newsDesk = new ArrayList<String>();
+            if(filters.isArts()) newsDesk.add("Arts");
+            if(filters.isFashion()) newsDesk.add("Fashion & Style");
+            if(filters.isSports()) newsDesk.add("Sports");
+            String newsDeskFilter = "";
+            for (int i = 0; i < newsDesk.size(); i ++){
+                newsDeskFilter += newsDesk.get(i);
+                if (i == newsDesk.size() - 1) newsDeskFilter += ", ";
+            }
+            if (newsDeskFilter != "") params.put ("fq", newsDeskFilter);
             params.put("api-key", "1532fa81593c4ee78fa835df68fe5f1f");
             params.put("page", page);
             params.put("q", query);
